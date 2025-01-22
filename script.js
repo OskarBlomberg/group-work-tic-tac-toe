@@ -28,7 +28,7 @@ window.addEventListener("load", () => {
 function initGlobalObject() {
   //Datastruktur för vilka platser som är lediga respektive har brickor
   //Genom at fylla i här med antingen X eler O kan ni testa era rättningsfunktioner
-  // oGameData.gameField = ["", "", "", "", "", "", "", "", ""];
+  oGameData.gameField = ["", "", "", "", "", "", "", "", ""];
 
   /* Testdata för att testa rättningslösning */
   // oGameData.gameField = ["", "X", "X", "O", "O", "O", "", "", ""];
@@ -45,6 +45,9 @@ function initGlobalObject() {
 
   //Kan anta värdet X eller O och indikerar vilken spelare som för tillfället skall lägga sin "bricka".
   oGameData.currentPlayer = "";
+
+  // Får färgen hos aktuell spelare
+  oGameData.currentPlayerColor = "";
 
   //Nickname för spelare ett som tilldelas från ett formulärelement,
   oGameData.nickNamePlayerOne = "";
@@ -176,13 +179,15 @@ function initiateGame() {
 
   // math random ger ett slumptal mellan från och med noll till, men exklusive 1
   if (Math.random() < 0.5) {
-    playerChar = oGameData.playerOne;
+    // playerChar = oGameData.playerOne;
     playerName = oGameData.nickNamePlayerOne;
     oGameData.currentPlayer = oGameData.playerOne;
+    oGameData.currentPlayerColor = oGameData.colorPlayerOne;
   } else {
-    playerChar = oGameData.playerTwo;
+    // playerChar = oGameData.playerTwo;
     playerName = oGameData.nickNamePlayerTwo;
     oGameData.currentPlayer = oGameData.playerTwo;
+    oGameData.currentPlayerColor = oGameData.colorPlayerTwo;
   }
 
   // tillskriver med template string för att kunna stoppa in variabeln
@@ -191,9 +196,41 @@ function initiateGame() {
   tableRef.addEventListener("click", executeMove);
 }
 
-function executeMove(event) {}
+function executeMove(event) {
+  const tdRef = event.target;
 
-function changePlayer() {}
+  if (tdRef.textContent === "") {
+    const tdDataRef = tdRef.getAttribute("data-id");
+
+    oGameData.gameField[tdDataRef] = oGameData.currentPlayer;
+
+    // I stället för en if-sats använder vi variablerna för nuvarande spelares symbol och färg (raderna 47 och 50). Sistnämnda skapade vi för ändamålet.
+    tdRef.style.backgroundColor = oGameData.currentPlayerColor;
+    tdRef.textContent = oGameData.currentPlayer;
+
+    /* if (oGameData.currentplayer === oGameData.playerOne) {
+      tdRef.style.backgroundColor = oGameData.colorPlayerOne;
+      tdRef.textContent = oGameData.playerOne;
+    } else {
+      tdRef.style.backgroundColor = oGameData.colorPlayerTwo;
+      tdRef.textContent = oGameData.playerTwo;
+    } */
+    checkForGameOver();
+    changePlayer();
+  }
+}
+
+function changePlayer() {
+  if (oGameData.currentPlayer === oGameData.playerOne) {
+    oGameData.currentPlayer = oGameData.playerTwo;
+    oGameData.currentPlayerColor = oGameData.colorPlayerTwo;
+    jumbotronH1Ref.textContent = `Aktuell spelare är ${oGameData.nickNamePlayerTwo}`;
+  } else {
+    oGameData.currentPlayer = oGameData.playerOne;
+    oGameData.currentPlayerColor = oGameData.colorPlayerOne;
+    jumbotronH1Ref.textContent = `Aktuell spelare är ${oGameData.nickNamePlayerOne}`;
+  }
+}
 
 function timer() {}
 

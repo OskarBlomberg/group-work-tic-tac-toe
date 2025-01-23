@@ -194,6 +194,9 @@ function initiateGame() {
   // tillskriver med template string för att kunna stoppa in variabeln
   jumbotronH1Ref.textContent = `Aktuell spelare är ${playerName}`;
 
+  // Tillskriver jumbotronen en border med aktuell spelares färg
+  jumbotronRef.style.border = `4px, solid, ${oGameData.currentPlayerColor}`;
+
   tableRef.addEventListener("click", executeMove);
 }
 
@@ -217,11 +220,12 @@ function executeMove(event) {
       tdRef.textContent = oGameData.playerTwo;
     } */
 
-    changePlayer();
     const gameOverStatus = checkForGameOver();
     if (gameOverStatus !== 0) {
       gameOver(gameOverStatus);
+      return;
     }
+    changePlayer();
   }
 }
 
@@ -230,13 +234,12 @@ function changePlayer() {
     oGameData.currentPlayer = oGameData.playerTwo;
     oGameData.currentPlayerColor = oGameData.colorPlayerTwo;
     jumbotronH1Ref.textContent = `Aktuell spelare är ${oGameData.nickNamePlayerTwo}`;
-    // jumbotronRef.style.border = `2px solid ${oGameData.colorPlayerTwo};`;
   } else {
     oGameData.currentPlayer = oGameData.playerOne;
     oGameData.currentPlayerColor = oGameData.colorPlayerOne;
     jumbotronH1Ref.textContent = `Aktuell spelare är ${oGameData.nickNamePlayerOne}`;
-    // jumbotronRef.style.border = `2px solid ${oGameData.colorPlayerOne};`;
   }
+  jumbotronRef.style.border = `4px, solid, ${oGameData.currentPlayerColor}`;
 }
 
 function timer() {}

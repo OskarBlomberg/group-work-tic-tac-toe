@@ -147,6 +147,7 @@ const color1Ref = document.getElementById("color1");
 const color2Ref = document.getElementById("color2");
 const tableRef = document.querySelector("table");
 const tdRefs = document.querySelectorAll("td");
+const jumbotronRef = document.querySelector(".jumbotron");
 const jumbotronH1Ref = document.querySelector(".jumbotron h1");
 
 function prepGame() {
@@ -215,8 +216,12 @@ function executeMove(event) {
       tdRef.style.backgroundColor = oGameData.colorPlayerTwo;
       tdRef.textContent = oGameData.playerTwo;
     } */
-    checkForGameOver();
+
     changePlayer();
+    const gameOverStatus = checkForGameOver();
+    if (gameOverStatus !== 0) {
+      gameOver(gameOverStatus);
+    }
   }
 }
 
@@ -225,13 +230,28 @@ function changePlayer() {
     oGameData.currentPlayer = oGameData.playerTwo;
     oGameData.currentPlayerColor = oGameData.colorPlayerTwo;
     jumbotronH1Ref.textContent = `Aktuell spelare är ${oGameData.nickNamePlayerTwo}`;
+    // jumbotronRef.style.border = `2px solid ${oGameData.colorPlayerTwo};`;
   } else {
     oGameData.currentPlayer = oGameData.playerOne;
     oGameData.currentPlayerColor = oGameData.colorPlayerOne;
     jumbotronH1Ref.textContent = `Aktuell spelare är ${oGameData.nickNamePlayerOne}`;
+    // jumbotronRef.style.border = `2px solid ${oGameData.colorPlayerOne};`;
   }
 }
 
 function timer() {}
 
-function gameOver(result) {}
+function gameOver(result) {
+  tableRef.removeEventListener("click", executeMove);
+  theFormRef.classList.remove("d-none");
+  gameAreaRef.classList.add("d-none");
+  if (result === 1) {
+    jumbotronH1Ref.textContent = `Vinnare är: ${oGameData.nickNamePlayerOne}!`;
+  } else if (result === 2) {
+    jumbotronH1Ref.textContent = `Vinnare är: ${oGameData.nickNamePlayerTwo}!`;
+  } else {
+    jumbotronH1Ref.textContent = "Det blev oavgjort!";
+  }
+  jumbotronH1Ref.innerText += "\nSpela igen?";
+  initGlobalObject();
+}

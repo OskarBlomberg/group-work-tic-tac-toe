@@ -254,6 +254,7 @@ function gameOver(result) {
     jumbotronH1Ref.textContent = `Vinnare är: ${oGameData.nickNamePlayerTwo}!`;
   } else {
     jumbotronH1Ref.textContent = "Det blev oavgjort!";
+    jumbotronRef.style.border = "unset";
   }
   jumbotronH1Ref.innerText += "\nSpela igen?";
   initGlobalObject();

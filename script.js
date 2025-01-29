@@ -153,10 +153,59 @@ const jumbotronH1Ref = document.querySelector(".jumbotron h1");
 function prepGame() {
   gameAreaRef.classList.add("d-none");
   // anropar funktionen utan () för att den bara ska köras när klickeventet sker. för att mata in argument kan man skriva ("click", (argumenten) => initiateGame)
-  newGameBtnRef.addEventListener("click", initiateGame);
+  newGameBtnRef.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      initiateGame();
+    }
+  });
 }
 
-function validateForm() {}
+function validateForm() {
+  try {
+    if (nick1Ref.value.length < 3 || nick1Ref.value.length > 10) {
+      throw {
+        message: "Namnet måste vara mellan 3 och 10 tecken långt.",
+        nodeRef: nick1Ref,
+      };
+    } else if (nick2Ref.value.length < 3 || nick2Ref.value.length > 10) {
+      throw {
+        message: "Namnet måste vara mellan 3 och 10 tecken långt.",
+        nodeRef: nick2Ref,
+      };
+    } else if (nick1Ref.value === nick2Ref.value) {
+      throw {
+        message: "Spelarna måste välja olika namn.",
+        nodeRef: nick2Ref,
+      };
+    } else if (color1Ref.value === "#000000" || color1Ref.value === "#ffffff") {
+      throw {
+        message: "Spelarfärg får inte vara svart eller vit.",
+        nodeRef: color1Ref,
+      };
+    } else if (color2Ref.value === "#000000" || color2Ref.value === "#ffffff") {
+      throw {
+        message: "Spelarfärg får inte vara svart eller vit.",
+        nodeRef: color2Ref,
+      };
+    } else if (color2Ref.value === color1Ref.value) {
+      throw {
+        message: "Spelarna måste välja olika färger.",
+        nodeRef: color2Ref,
+      };
+    }
+    return true;
+  } catch (error) {
+    errorMsgRef.textContent = error.message;
+    error.nodeRef.focus();
+    if (error.nodeRef === nick1Ref || error.nodeRef === nick2Ref) {
+      error.nodeRef.value = "";
+    } else {
+      error.nodeRef.value = "#ffffff";
+    }
+    errorMsgRef.style.color = "red";
+  }
+}
 
 function initiateGame() {
   theFormRef.classList.add("d-none");
@@ -198,6 +247,7 @@ function initiateGame() {
   jumbotronRef.style.border = `4px, solid, ${oGameData.currentPlayerColor}`;
 
   tableRef.addEventListener("click", executeMove);
+  // TIMERANROP  timer();
 }
 
 function executeMove(event) {
@@ -225,11 +275,13 @@ function executeMove(event) {
       gameOver(gameOverStatus);
       return;
     }
+
     changePlayer();
   }
 }
 
 function changePlayer() {
+  //  clearInterval();
   if (oGameData.currentPlayer === oGameData.playerOne) {
     oGameData.currentPlayer = oGameData.playerTwo;
     oGameData.currentPlayerColor = oGameData.colorPlayerTwo;
@@ -242,7 +294,14 @@ function changePlayer() {
   jumbotronRef.style.border = `4px, solid, ${oGameData.currentPlayerColor}`;
 }
 
-function timer() {}
+// Timerfunktion
+function timer() {
+  setInterval(() => {
+    console.log("byter!");
+
+    changePlayer();
+  }, 5000);
+}
 
 function gameOver(result) {
   tableRef.removeEventListener("click", executeMove);

@@ -68,7 +68,7 @@ function initGlobalObject() {
   oGameData.timerId = null;
 
   //Från start är timern inaktiverad
-  oGameData.timerEnabled = false;
+  oGameData.timerEnabled = true;
 
   //Referens till element för felmeddelanden
   oGameData.timeRef = document.querySelector("#errorMsg");
@@ -247,7 +247,7 @@ function initiateGame() {
   jumbotronRef.style.border = `4px, solid, ${oGameData.currentPlayerColor}`;
 
   tableRef.addEventListener("click", executeMove);
-  // TIMERANROP  timer();
+  timer();
 }
 
 function executeMove(event) {
@@ -275,13 +275,13 @@ function executeMove(event) {
       gameOver(gameOverStatus);
       return;
     }
-
+    clearInterval(oGameData.timerId);
     changePlayer();
+    timer();
   }
 }
 
 function changePlayer() {
-  //  clearInterval();
   if (oGameData.currentPlayer === oGameData.playerOne) {
     oGameData.currentPlayer = oGameData.playerTwo;
     oGameData.currentPlayerColor = oGameData.colorPlayerTwo;
@@ -295,15 +295,21 @@ function changePlayer() {
 }
 
 // Timerfunktion
-function timer() {
-  setInterval(() => {
-    console.log("byter!");
-
+/* function timer() {
+  oGameData.timerId = setInterval(() => {
     changePlayer();
   }, 5000);
+} */
+
+// Timerfunktion variant två
+function timer() {
+  if (oGameData.timerEnabled) {
+    oGameData.timerId = setInterval(changePlayer, 5000);
+  }
 }
 
 function gameOver(result) {
+  clearInterval(oGameData.timerId);
   tableRef.removeEventListener("click", executeMove);
   theFormRef.classList.remove("d-none");
   gameAreaRef.classList.add("d-none");
